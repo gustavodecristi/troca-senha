@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import TimeoutException
 from config import link_sistema, login, senha
 
@@ -21,11 +22,13 @@ def troca_senha(user, passwd, confirm_passwd):  # Parâmetros: Usuário, Senha e
     options = Options()
     options.add_argument("--headless")
 
+    service = Service(ChromeDriverManager().install())
+
     navegador = webdriver.Chrome(
-        executable_path=ChromeDriverManager().install(),
+        service=service,
         options=options,
-        service_args=["--silent"] # Suprime a saída do serviço do WebDriver
     )
+
 
     erro = []
 

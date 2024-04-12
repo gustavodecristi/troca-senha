@@ -1,5 +1,6 @@
 import PySimpleGUI as sg
 import troca_senha
+import re
 
 sg.theme("Reddit")
 layout = [
@@ -32,14 +33,14 @@ def open_window(user, password, confirm_password):
 while True:
     evento, valores = janela.read()
 
+    if evento == sg.WIN_CLOSED:
+        break
+
     usuario = valores["usuario"]
     senha = valores["senha"]
     confirma_senha = valores["confirma_senha"]
 
-    if evento == sg.WIN_CLOSED:
-        break
-
-    elif evento == "Limpar":
+    if evento == "Limpar":
         janela["usuario"].update("")
         janela["senha"].update("")
         janela["confirma_senha"].update("")
@@ -50,10 +51,16 @@ while True:
             janela["resultado"].update("Preencha todos os campos acima")
         elif valores["senha"] != valores["confirma_senha"]:
             janela["resultado"].update("As senhas não conferem")
-        elif len(valores["senha"]) < 6:
-            janela["resultado"].update("A senha deve ter pelo menos 6 caracteres: ")
-        elif valores["senha"].isalpha():
-            janela["resultado"].update("A senha deve ter pelo menos um número")
+        elif len(valores["senha"]) < 8 or len(valores["senha"]) > 20:
+            janela["resultado"].update("A senha deve conter entre 8 e 20 caracteres")
+        elif not re.search(r'[A-Z]', valores["senha"]):
+            janela["resultado"].update("A senha deve conter pelo menos uma letra maiúscula")
+        elif not re.search(r'[a-z]', valores["senha"]):
+            janela["resultado"].update("A senha deve conter pelo menos uma letra minúscula")
+        elif not re.search(r'[0-9]', valores["senha"]):
+            janela["resultado"].update("A senha deve conter pelo menos um número")
+        elif not re.search(r'[^A-Za-z0-9]', valores["senha"]):
+            janela["resultado"].update("A senha deve conter pelo menos um caractere especial")
         else:
             '''
             Lista de erros:
