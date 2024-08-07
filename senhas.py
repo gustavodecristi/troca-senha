@@ -44,17 +44,31 @@ def consulta_senhas(usuario):
         cursor.close()
         connection.close()
 
-def troca_senhas(usuario):
+def troca_senhas(usuario, senha):
     connection = cx_Oracle.connect(user=user, password=password, dsn=dsn)
     try:
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM CM_USUARIOS_SENHA_HIST WHERE CD_USUARIO = 5216")
+        query = """
+        UPDATE DATACENTER.CM_USUARIOS S
+        SET S.FG_ATIVO = 1, S.FG_SITUACAO = 1, S.DS_SENHA = :password
+        WHERE S.DS_LOGIN = :login_user
+        """
+        cursor.execute(query, login_user=usuario, password=senha)
         
-        for row in cursor:
-            print(row)
+        query2 = """
+        UPDATE DATACENTER.CM_USUARIO_BLOQUEIOS B
+        SET B.FG_ATIVO = 0, B.CD_USUARIO_DESBLOQUEO = 5592, B.DT_DESBLOQUEO = SYSDATE
+        WHERE B.CD_USUARIO = (SELECT CD_USUARIO FROM CM_USUARIOS S WHERE S.DS_LOGIN = :login_user)
+        AND B.FG_ATIVO = 1
+        """
+        cursor.execute(query2, login_user=usuario)
+        
+        connection.commit()
+        
     except cx_Oracle.DatabaseError as e:
         print(f"Ocorreu um erro: {e}")
     finally:
         cursor.close()
         connection.close()
+
 

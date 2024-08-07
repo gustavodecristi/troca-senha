@@ -14,7 +14,7 @@ layout = [
     [sg.Button("Confirmar", bind_return_key=True), sg.Button("Limpar")],
     [sg.Text("Após clicar em confirmar, aguarde a mensagem de concluído.", key="resultado")]
 ]
-janela = sg.Window("Troca Senha", layout, resizable=True, size=(400, 280))
+janela = sg.Window("Unimed Marília", layout, icon="unimed.ico", resizable=True, size=(400, 280))
 
 
 
@@ -22,6 +22,7 @@ while True:
     evento, valores = janela.read()
     
     if evento == sg.WIN_CLOSED:
+        janela.close()
         break
 
     elif evento == "Limpar":
@@ -34,7 +35,8 @@ while True:
         # Converte o texto digitado para maiúsculas enquanto o usuário digita
         janela["usuario"].update(valores["usuario"].upper())
 
-    elif evento == "Confirmar":        
+    elif evento == "Confirmar":
+        
         # Valida preenchimento dos campos
         if valores["usuario"] == "" or valores["senha"] == "" or valores["confirma_senha"] == "":
             janela["resultado"].update("Preencha todos os campos acima")
@@ -58,7 +60,10 @@ while True:
             janela["resultado"].update("A senha deve conter pelo menos um caractere especial")
         elif valores["senha"] in senhas.consulta_senhas(valores["usuario"]):
             janela["resultado"].update("Esta senha já foi utilizada anteriormente e não deve ser utilizada novamente")
+            
+        else:
+            troca_senhas(valores["usuario"], valores["senha"])
+            janela["resultado"].update("Senha alterada com sucesso!")
+            
 
             
-            
-janela.close()
