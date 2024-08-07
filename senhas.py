@@ -44,7 +44,7 @@ def consulta_senhas(usuario):
         cursor.close()
         connection.close()
 
-def troca_senhas(usuario, senha):
+def trocar_senha(usuario, senha):
     connection = cx_Oracle.connect(user=user, password=password, dsn=dsn)
     try:
         cursor = connection.cursor()

@@ -59,10 +59,10 @@ while True:
         elif not re.search(r'[^A-Za-z0-9]', valores["senha"]):
             janela["resultado"].update("A senha deve conter pelo menos um caractere especial")
         elif valores["senha"] in senhas.consulta_senhas(valores["usuario"]):
-            janela["resultado"].update("Esta senha já foi utilizada anteriormente e não deve ser utilizada novamente")
+            janela["resultado"].update("Esta senha já foi utilizada anteriormente e não deve ser\nutilizada novamente")
             
         else:
-            troca_senhas(valores["usuario"], valores["senha"])
+            senhas.trocar_senha(valores["usuario"], valores["senha"])
             janela["resultado"].update("Senha alterada com sucesso!")
             
 
