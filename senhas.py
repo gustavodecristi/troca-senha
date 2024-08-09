@@ -50,15 +50,15 @@ def trocar_senha(usuario, senha):
         cursor = connection.cursor()
         query = """
         UPDATE DATACENTER.CM_USUARIOS S
-        SET S.FG_ATIVO = 1, S.FG_SITUACAO = 1, S.DS_SENHA = :password
+        SET S.FG_ATIVO = 1, S.FG_SITUACAO = 1, S.DS_SENHA = :password, S.NR_TENTATIVAS = 0
         WHERE S.DS_LOGIN = :login_user
         """
         cursor.execute(query, login_user=usuario, password=senha)
         
         query2 = """
         UPDATE DATACENTER.CM_USUARIO_BLOQUEIOS B
-        SET B.FG_ATIVO = 0, B.CD_USUARIO_DESBLOQUEO = 5592, B.DT_DESBLOQUEO = SYSDATE
-        WHERE B.CD_USUARIO = (SELECT CD_USUARIO FROM CM_USUARIOS S WHERE S.DS_LOGIN = :login_user)
+        SET B.FG_ATIVO = 0, B.CD_USUARIO_DESBLOQUEO = 5595, B.DT_DESBLOQUEO = SYSDATE
+        WHERE B.CD_USUARIO = (SELECT CD_USUARIO FROM DATACENTER.CM_USUARIOS S WHERE S.DS_LOGIN = :login_user)
         AND B.FG_ATIVO = 1
         """
         cursor.execute(query2, login_user=usuario)
